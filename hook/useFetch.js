@@ -1,10 +1,7 @@
 import * as React from "react";
 import axios from "axios";
-import { RAPID_API_KEY } from "@env";
 
-const rapidApiKey = RAPID_API_KEY;
-
-export const useFetch = (endpoint, query) => {
+const useFetch = (endpoint, query) => {
   const [data, setData] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
@@ -14,7 +11,7 @@ export const useFetch = (endpoint, query) => {
     url: `https://jsearch.p.rapidapi.com/${endpoint}`,
     params: { ...query },
     headers: {
-      "X-RapidAPI-Key": rapidApiKey,
+      "X-RapidAPI-Key": "0c5a99391fmshba31ce56629a9d7p11f911jsna09a2e210410",
       "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
     },
   };
@@ -24,6 +21,7 @@ export const useFetch = (endpoint, query) => {
 
     try {
       const response = await axios.request(options);
+
       setData(response.data.data);
       setIsLoading(false);
     } catch (error) {
@@ -50,3 +48,5 @@ export const useFetch = (endpoint, query) => {
     reFetch,
   };
 };
+
+export default useFetch;
