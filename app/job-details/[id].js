@@ -26,14 +26,43 @@ const JobDetails = () => {
   const params = useSearchParams();
   const router = useRouter();
 
-  const { data, isLoading, error } = useFetch("job-details", {
+  const { data, isLoading, error, reFetch } = useFetch("job-details", {
     job_id: params.id,
   });
 
   const [refreshing, setRefreshing] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(tabs[0]);
 
-  const onRefresh = () => {};
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    reFetch();
+    setRefreshing(false);
+  });
+
+  const displayTabContent = () => {
+    switch (activeTab) {
+      case "About":
+        return (
+          <JobAbout info={data[0].job_description ?? "No data provided"} />
+        );
+      case "Qualifications":
+        return (
+          <Specifics
+            title="Qualifications"
+            points={data[0].job_highlights?.Qualifications ?? ["N/A"]}
+          />
+        );
+      case "Responsibilities":
+        return (
+          <Specifics
+            title="Responsibilities"
+            points={data[0].job_highlights?.Responsibilities ?? ["N/A"]}
+          />
+        );
+      default:
+        break;
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
@@ -81,9 +110,18 @@ const JobDetails = () => {
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
               />
+
+              {displayTabContent()}
             </View>
           )}
         </ScrollView>
+
+        <JobFooter
+          url={
+            data[0]?.job_google_link ??
+            "https://careers.google.com/jobs/results/"
+          }
+        />
       </>
     </SafeAreaView>
   );
